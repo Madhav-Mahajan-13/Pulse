@@ -1,3 +1,5 @@
+import { canonicalPath } from "./http/path.js";
+
 const DEFAULTS = {
   retentionMinutes: 60,
   bucketSizeSeconds: 60,
@@ -103,10 +105,7 @@ function validatePath(name: string, value: string): string {
       `${name} must be an absolute path without a query or fragment`,
     );
   }
-  if (value.length > 1 && value.endsWith("/")) {
-    return value.slice(0, -1);
-  }
-  return value;
+  return canonicalPath(value);
 }
 
 function validateExcludePaths(

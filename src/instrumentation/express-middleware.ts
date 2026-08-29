@@ -3,6 +3,7 @@ import { performance } from "node:perf_hooks";
 import type { Request, RequestHandler } from "express";
 
 import type { ResolvedNodePulseConfig } from "../config.js";
+import { canonicalPath } from "../http/path.js";
 
 interface ExpressRouteMetadata {
   readonly path?: unknown;
@@ -117,13 +118,6 @@ function serializeRoutePattern(pattern: unknown): string | null {
     return `{${alternatives.join("|")}}`;
   }
   return null;
-}
-
-function canonicalPath(path: string): string {
-  const absolutePath = path.startsWith("/") ? path : `/${path}`;
-  return absolutePath.length > 1
-    ? absolutePath.replace(/\/+$/, "")
-    : absolutePath;
 }
 
 function isSelfTraffic(path: string, config: ResolvedNodePulseConfig): boolean {

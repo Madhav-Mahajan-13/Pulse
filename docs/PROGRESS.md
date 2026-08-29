@@ -66,6 +66,31 @@ Express does not expose the original pattern for parameterized router mount path
 
 Real Express traffic can now flow into the metrics engine correctly for standard direct routes. The next milestone makes those metrics visible through JSON and the browser dashboard.
 
+## 2026-08-30 — Public middleware and dashboard completed
+
+### Completed
+
+- Added the single public `nodepulse(options?)` middleware factory.
+- Added versioned JSON metrics with bucket-aligned window queries and structured validation errors.
+- Added the self-contained, automatically refreshing HTML dashboard with route summaries and sparklines.
+- Added defensive dashboard headers and read-only endpoint enforcement.
+- Added direct ESM default-import and CommonJS require compatibility, verified from built artifacts.
+- Added an npm package dry run confirming only intended runtime files would be published.
+- Added a locally bound example application for safe browser testing.
+- Smoke-tested the built example end to end: dynamic, fast, and error routes appeared in schema-v1 JSON and the dashboard returned HTTP 200.
+- Passed 42 tests with 96.47% line coverage, 92.4% branch coverage, and 100% function coverage.
+
+### Next
+
+- Add CI matrices for Node.js 22/24 and Express 4/5.
+- Add performance and bounded-memory benchmark harnesses.
+- Refine dashboard interaction and accessibility through browser-level testing.
+- Resolve parameterized router-mount normalization without private Express internals.
+
+### Plain-language status
+
+NodePulse now works end to end: application requests are measured, stored, exposed as JSON, and shown in a browser dashboard. It remains private and pre-release while compatibility and performance gates are completed.
+
 ### Known tooling note
 
 The dependency audit currently reports one low-severity advisory in esbuild 0.27, pulled in by the build tool. It affects running a local development server on Windows; NodePulse does not run that server or ship esbuild to consumers. The upstream build tool currently requires the affected release line, so this will be upgraded when a compatible patched release is available.

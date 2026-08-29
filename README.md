@@ -2,24 +2,81 @@
 
 Zero-configuration, self-hosted application performance monitoring for Node.js and Express.
 
-## Development status
+NodePulse is in active pre-release development and is not published yet. The public middleware, rolling metrics engine, JSON endpoint, and first dashboard are implemented. The package remains `private` to prevent accidental publication before release checks are complete.
 
-NodePulse is in active pre-release development. Configuration validation, the latency histogram, bounded rolling storage, and internal Express request instrumentation are implemented; the public middleware and dashboard are not available yet. The package is marked `private` to prevent accidental publication during this stage.
+> **Security:** The dashboard and JSON endpoint have no built-in authentication. Never expose them publicly without placing your own authentication middleware before NodePulse.
 
-The approved requirements are frozen in [`SRS_NodePulse_APM.docx`](./SRS_NodePulse_APM.docx), with its checksum recorded in [`SRS_BASELINE.md`](./SRS_BASELINE.md).
-
-## Local development
+## Try it locally
 
 Node.js 22 or 24 is required.
 
-```sh
-npm install
-npm run check
-npm run test:coverage
+```powershell
+npm.cmd install
+npm.cmd run example
 ```
 
-`npm run check` verifies formatting, lint rules, strict TypeScript types, unit tests, and both ESM and CommonJS builds.
+Generate some sample traffic:
 
-## Planned dashboard security
+- `http://127.0.0.1:3000/fast`
+- `http://127.0.0.1:3000/slow/123`
+- `http://127.0.0.1:3000/error`
 
-The v1 dashboard will intentionally have no built-in authentication. Applications must protect the configured dashboard and JSON paths with their own authentication middleware before exposing them outside a trusted environment.
+Then open `http://127.0.0.1:3000/nodepulse`.
+
+## Application usage
+
+ES modules:
+
+```js
+import express from "express";
+import nodepulse from "nodepulse";
+
+const app = express();
+app.use(nodepulse());
+```
+
+CommonJS:
+
+```js
+const express = require("express");
+const nodepulse = require("nodepulse");
+
+const app = express();
+app.use(nodepulse());
+```
+
+Protect the default endpoints with host authentication:
+
+```js
+app.use("/nodepulse", requireAuth);
+app.use(nodepulse());
+```
+
+The dashboard is served at `/nodepulse`. Raw metrics are available at `/nodepulse/metrics.json`; a bucket-aligned sub-window can be requested with `?windowSeconds=300`.
+
+## Configuration
+
+```js
+app.use(
+  nodepulse({
+    retentionMinutes: 60,
+    bucketSizeSeconds: 60,
+    dashboardPath: "/nodepulse",
+    metricsJsonPath: "/nodepulse/metrics.json",
+    errorStatusThreshold: 500,
+    maxTrackedRoutes: 200,
+    excludePaths: ["/health", /^\/internal/],
+  }),
+);
+```
+
+Invalid options throw immediately during application startup.
+
+## Development checks
+
+```powershell
+npm.cmd run check
+npm.cmd run test:coverage
+```
+
+The frozen requirements are recorded in [`SRS_BASELINE.md`](./SRS_BASELINE.md). Architecture and progress notes live under [`docs`](./docs/).

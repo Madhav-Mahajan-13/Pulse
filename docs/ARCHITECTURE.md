@@ -38,6 +38,16 @@ The first implementation slice contains configuration validation and the fixed-b
 
 Express exposes a matched route's pattern through `req.route.path`, which covers direct route parameters such as `/users/:id`. It exposes a mounted router's `baseUrl` as the matched literal value, not always as the original parameterized mount pattern. Static mounts are normalized correctly; parameterized router mounts need a separate compatibility design. The implementation intentionally avoids inspecting private Express router internals.
 
+## Presentation and public composition
+
+- `nodepulse(options?)` validates configuration once and creates one private store per middleware instance.
+- Presentation handles the configured dashboard and JSON paths before instrumentation, keeping self-traffic out of metrics.
+- The JSON response carries `schemaVersion: 1` and accepts bucket-aligned `windowSeconds` queries.
+- Invalid windows return a structured HTTP 400 response; non-read methods on owned endpoints return HTTP 405.
+- The dashboard contains inline CSS and JavaScript only, polls every five seconds, and builds route rows with DOM text nodes to avoid HTML injection.
+- Dashboard responses set no-store, content-type, framing, referrer, and content-security headers.
+- ESM imports use the generated ESM bundle. CommonJS uses a small compatibility facade so `require("nodepulse")` returns the function directly rather than a `{ default }` wrapper.
+
 ## Toolchain decisions
 
 - Node.js 22 is the minimum runtime; CI will verify Node.js 22 and 24.
