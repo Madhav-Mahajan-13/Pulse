@@ -15,13 +15,29 @@
 
 ### Next
 
-- Implement the bounded rolling time-bucket store.
-- Add route-cardinality overflow and unmatched-status storage.
 - Connect Express request lifecycle instrumentation.
+- Normalize matched Express routes into `METHOD /path/:parameter` keys.
+- Add finish/close handling with double-recording protection.
 
 ### Plain-language status
 
 The project skeleton and the first metrics building block are in place. No usable middleware is exposed yet; this prevents an unfinished no-op package from appearing functional.
+
+## 2026-08-30 — Rolling store completed
+
+### Completed
+
+- Added bucket-aligned rolling storage with automatic retention expiry.
+- Added matched-route cardinality limits and the reserved `other` route.
+- Added bounded unmatched status counts with an `other` status overflow.
+- Added completed, error, and aborted request accounting.
+- Added shorter rolling-window queries, RPS, averages, error rate, min/max, and p50/p95/p99 calculations.
+- Verified bucket rollover, expiry, reclaimed route slots, histogram merging, query validation, and overflow behavior.
+- Passed the full quality gate with 27 tests, 97.52% line coverage, 91.57% branch coverage, and 100% function coverage.
+
+### Plain-language status
+
+The metrics engine can now safely retain and calculate bounded in-memory data. It is not connected to Express yet; request lifecycle instrumentation is the next milestone.
 
 ### Known tooling note
 

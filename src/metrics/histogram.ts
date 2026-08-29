@@ -26,6 +26,43 @@ export class LatencyHistogram {
     this.#maximum = Math.max(this.#maximum ?? milliseconds, milliseconds);
   }
 
+  merge(snapshot: HistogramSnapshot): void {
+    if (snapshot.counts.length !== BUCKET_COUNT) {
+      throw new RangeError(
+        `histogram snapshot must contain ${BUCKET_COUNT} buckets`,
+      );
+    }
+
+    let mergedCount = 0;
+    snapshot.counts.forEach((count, index) => {
+      if (!Number.isSafeInteger(count) || count < 0) {
+        throw new RangeError(
+          "histogram bucket counts must be non-negative integers",
+        );
+      }
+      this.#counts[index] = (this.#counts[index] ?? 0) + count;
+      mergedCount += count;
+    });
+
+    if (mergedCount !== snapshot.count) {
+      throw new RangeError(
+        "histogram snapshot count does not match its buckets",
+      );
+    }
+    if (snapshot.maximum !== null) {
+      if (!Number.isFinite(snapshot.maximum) || snapshot.maximum < 0) {
+        throw new RangeError(
+          "histogram maximum must be non-negative and finite",
+        );
+      }
+      this.#maximum = Math.max(
+        this.#maximum ?? snapshot.maximum,
+        snapshot.maximum,
+      );
+    }
+    this.#count += snapshot.count;
+  }
+
   percentile(quantile: number): number | null {
     if (!Number.isFinite(quantile) || quantile < 0 || quantile > 1) {
       throw new RangeError("quantile must be between 0 and 1 inclusive");

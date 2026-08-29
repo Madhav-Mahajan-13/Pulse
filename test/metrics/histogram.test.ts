@@ -39,6 +39,35 @@ describe("LatencyHistogram", () => {
     expect(histogram.percentile(1)).toBe(20_000);
   });
 
+  it("merges bucket counts and maximum values", () => {
+    const first = new LatencyHistogram();
+    const second = new LatencyHistogram();
+    [10, 100].forEach((value) => first.record(value));
+    [1_000, 20_000].forEach((value) => second.record(value));
+
+    first.merge(second.snapshot());
+
+    expect(first.snapshot()).toMatchObject({ count: 4, maximum: 20_000 });
+  });
+
+  it("rejects malformed snapshots", () => {
+    const histogram = new LatencyHistogram();
+
+    expect(() =>
+      histogram.merge({ counts: [1], count: 1, maximum: 1 }),
+    ).toThrow(/12 buckets/);
+    expect(() =>
+      histogram.merge({
+        counts: Array(12).fill(-1),
+        count: -12,
+        maximum: null,
+      }),
+    ).toThrow(/non-negative integers/);
+    expect(() =>
+      histogram.merge({ counts: Array(12).fill(0), count: 1, maximum: null }),
+    ).toThrow(/does not match/);
+  });
+
   it("rejects invalid observations and quantiles", () => {
     const histogram = new LatencyHistogram();
 

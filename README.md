@@ -4,7 +4,7 @@ Zero-configuration, self-hosted application performance monitoring for Node.js a
 
 ## Development status
 
-NodePulse is in active pre-release development. Configuration validation and the latency histogram core are implemented; the public middleware is not available yet. The package is marked `private` to prevent accidental publication during this stage.
+NodePulse is in active pre-release development. Configuration validation, the latency histogram, and the bounded rolling metrics store are implemented; the public middleware is not available yet. The package is marked `private` to prevent accidental publication during this stage.
 
 The approved requirements are frozen in [`SRS_NodePulse_APM.docx`](./SRS_NodePulse_APM.docx), with its checksum recorded in [`SRS_BASELINE.md`](./SRS_BASELINE.md).
 
