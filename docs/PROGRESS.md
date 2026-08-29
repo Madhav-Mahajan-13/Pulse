@@ -115,6 +115,30 @@ NodePulse now works end to end: application requests are measured, stored, expos
 
 NodePulse now has automated compatibility, browser, speed, and memory checks. Local results satisfy the v1 performance and bounded-memory requirements; GitHub-hosted runs will become the shared release record once the repository is connected.
 
+## 2026-08-30 — Alpha package candidate prepared
+
+### Completed
+
+- Added parameterized router-mount normalization without reading private Express router internals.
+- Preserved exact mount parameter names when `mergeParams` is enabled and added stable ID-shaped fallbacks otherwise.
+- Confirmed `nodepulse` and `nodepulse-apm` were not present in the npm registry at the time of checking.
+- Set the candidate version to `0.1.0-alpha.1` while retaining `private: true` to prevent accidental publication.
+- Added MIT licensing, changelog, contribution guidance, security policy, and an explicit release checklist.
+- Packed and installed the tarball in an isolated consumer environment.
+- Verified ESM, direct CommonJS, ESM TypeScript, and CommonJS TypeScript consumption from the packed artifact.
+- Created `nodepulse-0.1.0-alpha.1.tgz` with SHA-256 `A85AACE9E2B9303DCF4A3EFE52FDD2DE8C393F958EB301CBA3F700F514D7AE00`.
+
+### Remaining release blockers
+
+- Choose the canonical GitHub repository and add its URLs to package metadata.
+- Enable private vulnerability reporting and run hosted CI.
+- Confirm npm ownership immediately before publishing.
+- Remove `private: true` only when the external release checklist is complete.
+
+### Plain-language status
+
+The first alpha is packaged and verified locally, but intentionally cannot be published yet. The remaining work requires repository and npm-account decisions rather than more local implementation.
+
 ### Known tooling note
 
 The dependency audit currently reports one low-severity advisory in esbuild 0.27, pulled in by the build tool. It affects running a local development server on Windows; NodePulse does not run that server or ship esbuild to consumers. The upstream build tool currently requires the affected release line, so this will be upgraded when a compatible patched release is available.

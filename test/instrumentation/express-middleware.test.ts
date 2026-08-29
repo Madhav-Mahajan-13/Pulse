@@ -55,6 +55,36 @@ describe("Express instrumentation", () => {
     );
   });
 
+  it("preserves named parameters from a merged router mount", async () => {
+    const { app, store } = createHarness();
+    const router = express.Router({ mergeParams: true });
+    router.get("/orders/:orderId", (_request, response) => response.send("ok"));
+    app.use("/accounts/:accountId", router);
+
+    await request(app).get("/accounts/42/orders/7").expect(200);
+
+    expect(store.query(60).routes[0]?.routeKey).toBe(
+      "GET /accounts/:accountId/orders/:orderId",
+    );
+  });
+
+  it("uses a stable fallback for ID-shaped mounts without merged parameters", async () => {
+    const { app, store } = createHarness();
+    const router = express.Router();
+    router.get("/orders/:orderId", (_request, response) => response.send("ok"));
+    app.use("/accounts/:accountId", router);
+
+    await request(app).get("/accounts/42/orders/7").expect(200);
+    await request(app).get("/accounts/99/orders/8").expect(200);
+
+    expect(store.query(60).routes).toMatchObject([
+      {
+        routeKey: "GET /accounts/:mountParam1/orders/:orderId",
+        requestCount: 2,
+      },
+    ]);
+  });
+
   it("records error responses and unmatched status counts", async () => {
     const { app, store } = createHarness();
     app.get("/failure", (_request, response) => response.sendStatus(503));
@@ -177,6 +207,24 @@ describe("normalizeRoutePath", () => {
       } as Request),
     ).toBe("/{regex:/^\\/items\\/\\d+$/}");
     expect(normalizeRoutePath({ baseUrl: "" } as Request)).toBeNull();
+  });
+
+  it("normalizes common mounted identifier shapes without changing static segments", () => {
+    expect(
+      normalizeRoutePath({
+        baseUrl:
+          "/tenants/507f1f77bcf86cd799439011/releases/550e8400-e29b-41d4-a716-446655440000",
+        params: {},
+        route: { path: "/status" },
+      } as Request),
+    ).toBe("/tenants/:mountParam1/releases/:mountParam2/status");
+    expect(
+      normalizeRoutePath({
+        baseUrl: "/api/v2",
+        params: {},
+        route: { path: "/status" },
+      } as Request),
+    ).toBe("/api/v2/status");
   });
 });
 

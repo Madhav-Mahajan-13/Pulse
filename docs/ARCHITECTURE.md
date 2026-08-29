@@ -34,9 +34,15 @@ The first implementation slice contains configuration validation and the fixed-b
 - Recording failures are isolated and never escape into the host response lifecycle.
 - The integration suite is verified against both supported Express major versions.
 
-### Express metadata limitation
+### Mounted router normalization
 
-Express exposes a matched route's pattern through `req.route.path`, which covers direct route parameters such as `/users/:id`. It exposes a mounted router's `baseUrl` as the matched literal value, not always as the original parameterized mount pattern. Static mounts are normalized correctly; parameterized router mounts need a separate compatibility design. The implementation intentionally avoids inspecting private Express router internals.
+Express exposes direct route patterns through `req.route.path`, but mounted `baseUrl` values may contain literal parameter values. NodePulse normalizes them without private router internals:
+
+- Routers created with `mergeParams: true` retain the original parameter names.
+- Numeric IDs, UUIDs, 24-character hexadecimal ObjectIds, and long opaque identifiers containing digits use stable `:mountParamN` placeholders when names are unavailable.
+- Static mount segments remain unchanged.
+
+An arbitrary short slug on a router without `mergeParams` cannot be distinguished from a static segment through public Express request metadata. Applications using such mounts should enable `mergeParams` to preserve exact aggregation.
 
 ## Presentation and public composition
 

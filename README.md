@@ -72,6 +72,8 @@ app.use(
 
 Invalid options throw immediately during application startup.
 
+For parameterized router mounts, create the router with `express.Router({ mergeParams: true })` when mount values can be short slugs. Common numeric, UUID, ObjectId, and opaque ID values are normalized automatically even when parameter names are unavailable.
+
 ## Development checks
 
 ```powershell

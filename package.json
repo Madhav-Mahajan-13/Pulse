@@ -1,8 +1,22 @@
 {
   "name": "nodepulse",
-  "version": "0.0.0-development",
+  "version": "0.1.0-alpha.1",
   "description": "Zero-configuration application performance monitoring for Node.js and Express.",
   "private": true,
+  "license": "MIT",
+  "keywords": [
+    "apm",
+    "express",
+    "monitoring",
+    "nodejs",
+    "observability",
+    "performance"
+  ],
+  "sideEffects": false,
+  "publishConfig": {
+    "access": "public",
+    "provenance": true
+  },
   "type": "module",
   "main": "./compat/index.cjs",
   "module": "./dist/index.js",
@@ -20,8 +34,10 @@
     }
   },
   "files": [
+    "CHANGELOG.md",
     "compat",
     "dist",
+    "LICENSE",
     "README.md"
   ],
   "engines": {
@@ -45,7 +61,9 @@
     "benchmark:memory": "tsx --expose-gc scripts/benchmarks/memory.ts --profile=smoke",
     "benchmark:memory:release": "tsx --expose-gc scripts/benchmarks/memory.ts --profile=release",
     "benchmark:check": "node --check scripts/benchmarks/overhead.mjs",
-    "check": "npm run format:check && npm run lint && npm run typecheck && npm run example:check && npm run benchmark:check && npm run test && npm run build"
+    "package-verifier:check": "node --check scripts/verify-package.mjs",
+    "verify:package": "npm run build && node scripts/verify-package.mjs",
+    "check": "npm run format:check && npm run lint && npm run typecheck && npm run example:check && npm run benchmark:check && npm run package-verifier:check && npm run test && npm run build"
   },
   "devDependencies": {
     "@eslint/js": "^10.0.1",

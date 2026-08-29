@@ -9,7 +9,8 @@ interface ExpressRouteMetadata {
   readonly path?: unknown;
 }
 
-type RequestWithRoute = Omit<Request, "route"> & {
+type RequestWithRoute = Omit<Request, "params" | "route"> & {
+  readonly params?: Readonly<Record<string, string | string[]>>;
   readonly route?: ExpressRouteMetadata;
 };
 type DurationClock = () => number;
@@ -93,7 +94,10 @@ export function normalizeRoutePath(request: RequestWithRoute): string | null {
     return null;
   }
 
-  const basePath = canonicalPath(request.baseUrl || "/");
+  const basePath = normalizeMountedBasePath(
+    request.baseUrl || "/",
+    request.params ?? {},
+  );
   if (routePattern === "/") {
     return basePath;
   }
@@ -101,6 +105,57 @@ export function normalizeRoutePath(request: RequestWithRoute): string | null {
     return canonicalPath(routePattern);
   }
   return canonicalPath(`${basePath}/${routePattern.replace(/^\/+/, "")}`);
+}
+
+function normalizeMountedBasePath(
+  baseUrl: string,
+  params: Readonly<Record<string, string | string[]>>,
+): string {
+  let fallbackIndex = 0;
+  const paramEntries = Object.entries(params);
+  const normalizedSegments = canonicalPath(baseUrl)
+    .split("/")
+    .map((segment) => {
+      if (segment.length === 0) {
+        return segment;
+      }
+
+      const decodedSegment = safelyDecode(segment);
+      const namedParameter = paramEntries.find(([, value]) =>
+        typeof value === "string"
+          ? value === decodedSegment
+          : value.includes(decodedSegment),
+      );
+      if (namedParameter !== undefined) {
+        return `:${namedParameter[0]}`;
+      }
+      if (looksLikeIdentifier(decodedSegment)) {
+        fallbackIndex += 1;
+        return `:mountParam${fallbackIndex}`;
+      }
+      return segment;
+    });
+
+  return canonicalPath(normalizedSegments.join("/"));
+}
+
+function safelyDecode(segment: string): string {
+  try {
+    return decodeURIComponent(segment);
+  } catch {
+    return segment;
+  }
+}
+
+function looksLikeIdentifier(segment: string): boolean {
+  return (
+    /^\d+$/.test(segment) ||
+    /^[0-9a-f]{24}$/i.test(segment) ||
+    /^[0-9a-f]{8}-[0-9a-f]{4}-[1-5][0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$/i.test(
+      segment,
+    ) ||
+    (/^[a-z0-9_-]{16,}$/i.test(segment) && /\d/.test(segment))
+  );
 }
 
 function serializeRoutePattern(pattern: unknown): string | null {
