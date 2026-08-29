@@ -39,6 +39,33 @@ The project skeleton and the first metrics building block are in place. No usabl
 
 The metrics engine can now safely retain and calculate bounded in-memory data. It is not connected to Express yet; request lifecycle instrumentation is the next milestone.
 
+## 2026-08-30 — Express instrumentation completed
+
+### Completed
+
+- Connected real Express request lifecycles to the metrics recorder.
+- Added `METHOD /normalized/path` keys for direct routes and static router mounts.
+- Added monotonic response timing and status-code recording.
+- Added `finish`/`close` handling with double-recording protection.
+- Added abort, unmatched, dashboard self-traffic, and custom exclusion behavior.
+- Confirmed monitoring failures cannot break the host response.
+- Tested the same integration suite against patched Express 4 and Express 5 releases.
+- Passed 34 tests with 97.04% line coverage, 93.21% branch coverage, and 100% function coverage.
+
+### Known limitation
+
+Express does not expose the original pattern for parameterized router mount paths through its public request metadata. Direct dynamic routes work correctly, but a mount such as `/accounts/:accountId` needs a separate compatibility design to avoid literal account IDs entering the base path. The route cap still bounds memory while this is addressed.
+
+### Next
+
+- Build the JSON metrics endpoint and define its stable response schema.
+- Build the self-contained HTML dashboard.
+- Compose storage, instrumentation, and presentation behind `nodepulse(options?)`.
+
+### Plain-language status
+
+Real Express traffic can now flow into the metrics engine correctly for standard direct routes. The next milestone makes those metrics visible through JSON and the browser dashboard.
+
 ### Known tooling note
 
 The dependency audit currently reports one low-severity advisory in esbuild 0.27, pulled in by the build tool. It affects running a local development server on Windows; NodePulse does not run that server or ship esbuild to consumers. The upstream build tool currently requires the affected release line, so this will be upgraded when a compatible patched release is available.

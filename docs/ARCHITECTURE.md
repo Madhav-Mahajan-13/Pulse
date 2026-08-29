@@ -23,6 +23,21 @@ The first implementation slice contains configuration validation and the fixed-b
 - Unmatched status codes are capped at 32 distinct values per bucket and per aggregate query; excess values use the `other` status entry.
 - Query windows must be bucket-aligned and cannot exceed configured retention.
 
+## Express instrumentation
+
+- A monotonic high-resolution clock measures completed response duration.
+- Route keys are created after Express resolves the request, using `METHOD /normalized/path`.
+- `finish` records a completed response; `close` before `finish` records an abort.
+- Both listeners share an idempotent guard, so a request can never be recorded twice.
+- Dashboard and JSON paths are skipped before listeners are attached. Other exclusions are matched against the normalized route pattern after routing.
+- Requests without `req.route` at completion are stored as unmatched status counts.
+- Recording failures are isolated and never escape into the host response lifecycle.
+- The integration suite is verified against both supported Express major versions.
+
+### Express metadata limitation
+
+Express exposes a matched route's pattern through `req.route.path`, which covers direct route parameters such as `/users/:id`. It exposes a mounted router's `baseUrl` as the matched literal value, not always as the original parameterized mount pattern. Static mounts are normalized correctly; parameterized router mounts need a separate compatibility design. The implementation intentionally avoids inspecting private Express router internals.
+
 ## Toolchain decisions
 
 - Node.js 22 is the minimum runtime; CI will verify Node.js 22 and 24.
