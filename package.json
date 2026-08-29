@@ -35,15 +35,21 @@
     "typecheck": "tsc --noEmit",
     "test": "vitest run",
     "test:coverage": "vitest run --coverage",
+    "test:browser": "npm run build && playwright test",
     "lint": "eslint .",
     "format": "prettier --write .",
     "format:check": "prettier --check .",
     "example": "npm run build && node examples/basic-app.mjs",
     "example:check": "node --check examples/basic-app.mjs",
-    "check": "npm run format:check && npm run lint && npm run typecheck && npm run example:check && npm run test && npm run build"
+    "benchmark:overhead": "npm run build && node scripts/benchmarks/overhead.mjs",
+    "benchmark:memory": "tsx --expose-gc scripts/benchmarks/memory.ts --profile=smoke",
+    "benchmark:memory:release": "tsx --expose-gc scripts/benchmarks/memory.ts --profile=release",
+    "benchmark:check": "node --check scripts/benchmarks/overhead.mjs",
+    "check": "npm run format:check && npm run lint && npm run typecheck && npm run example:check && npm run benchmark:check && npm run test && npm run build"
   },
   "devDependencies": {
     "@eslint/js": "^10.0.1",
+    "@playwright/test": "^1.62.1",
     "@types/express": "^5.0.0",
     "@types/node": "^26.4.0",
     "@types/supertest": "^7.2.1",
@@ -53,6 +59,7 @@
     "prettier": "^3.9.6",
     "supertest": "^7.2.2",
     "tsup": "^8.5.1",
+    "tsx": "^4.23.12",
     "typescript": "^5.9.3",
     "typescript-eslint": "^8.68.0",
     "vitest": "^4.1.11"

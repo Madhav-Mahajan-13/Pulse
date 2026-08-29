@@ -91,6 +91,30 @@ Real Express traffic can now flow into the metrics engine correctly for standard
 
 NodePulse now works end to end: application requests are measured, stored, exposed as JSON, and shown in a browser dashboard. It remains private and pre-release while compatibility and performance gates are completed.
 
+## 2026-08-30 — Compatibility and performance gates completed
+
+### Completed
+
+- Added a four-way CI matrix covering Node.js 22/24 and Express 4/5.
+- Added real Chromium dashboard checks at desktop and mobile viewport sizes.
+- Verified live route rendering, accessible roles, polling success, no browser errors, and no external asset requests.
+- Added a repeatable p95 HTTP overhead benchmark with a strict 1 ms gate.
+- Measured 0.491 ms local p95 overhead on the documented reference machine.
+- Added bounded-memory smoke and release simulations at 500 RPS across 50 routes.
+- Completed the full 3.6-million-request release simulation; post-retention-fill heap growth was 96,136 bytes against a 10 MiB ceiling.
+- Added normal-CI smoke gates and a manually triggered full release benchmark workflow.
+
+### Next
+
+- Resolve parameterized router-mount normalization.
+- Add README installation and release metadata once the npm package name and repository are finalized.
+- Run the compatibility matrix and benchmarks on GitHub-hosted reference runners.
+- Prepare the first pre-release package and changelog.
+
+### Plain-language status
+
+NodePulse now has automated compatibility, browser, speed, and memory checks. Local results satisfy the v1 performance and bounded-memory requirements; GitHub-hosted runs will become the shared release record once the repository is connected.
+
 ### Known tooling note
 
 The dependency audit currently reports one low-severity advisory in esbuild 0.27, pulled in by the build tool. It affects running a local development server on Windows; NodePulse does not run that server or ship esbuild to consumers. The upstream build tool currently requires the affected release line, so this will be upgraded when a compatible patched release is available.

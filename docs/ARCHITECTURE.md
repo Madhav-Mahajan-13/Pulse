@@ -48,6 +48,14 @@ Express exposes a matched route's pattern through `req.route.path`, which covers
 - Dashboard responses set no-store, content-type, framing, referrer, and content-security headers.
 - ESM imports use the generated ESM bundle. CommonJS uses a small compatibility facade so `require("nodepulse")` returns the function directly rather than a `{ default }` wrapper.
 
+## Release gates
+
+- CI covers Node.js 22 and 24 crossed with Express 4 and 5.
+- Chromium tests exercise the actual built dashboard at desktop and mobile viewports.
+- The overhead harness compares p95 localhost HTTP latency against an uninstrumented Express baseline and enforces the SRS limit of less than 1 ms.
+- The memory harness drives the internal store with a deterministic clock. Its release profile simulates 3.6 million requests across 120 minutes and verifies heap growth plateaus after the 60-minute retention window fills.
+- Full memory profiling is available as a manually triggered release workflow; shorter smoke profiles run during normal CI.
+
 ## Toolchain decisions
 
 - Node.js 22 is the minimum runtime; CI will verify Node.js 22 and 24.

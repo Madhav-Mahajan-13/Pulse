@@ -77,6 +77,9 @@ Invalid options throw immediately during application startup.
 ```powershell
 npm.cmd run check
 npm.cmd run test:coverage
+npm.cmd run test:browser
+npm.cmd run benchmark:overhead
+npm.cmd run benchmark:memory
 ```
 
-The frozen requirements are recorded in [`SRS_BASELINE.md`](./SRS_BASELINE.md). Architecture and progress notes live under [`docs`](./docs/).
+The frozen requirements are recorded in [`SRS_BASELINE.md`](./SRS_BASELINE.md). Architecture, benchmark methodology, and progress notes live under [`docs`](./docs/).
