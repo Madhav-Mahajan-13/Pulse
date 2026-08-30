@@ -4,8 +4,15 @@ import nodepulse from "../dist/index.js";
 
 const app = express();
 const port = Number(process.env.PORT ?? 3000);
+const testBucketSize = process.env.NODEPULSE_BUCKET_SIZE_SECONDS;
 
-app.use(nodepulse());
+app.use(
+  nodepulse(
+    testBucketSize === undefined
+      ? {}
+      : { bucketSizeSeconds: Number(testBucketSize), retentionMinutes: 1 },
+  ),
+);
 
 app.get("/fast", (_request, response) => {
   response.json({ ok: true });

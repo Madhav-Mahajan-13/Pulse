@@ -6,6 +6,7 @@ All notable changes will be documented here. This project follows Semantic Versi
 
 ### Added
 
+- Comprehensive plain-language product and developer manual with architecture, storage, calculation, API, repository, testing, and troubleshooting diagrams.
 - Single `nodepulse(options?)` Express middleware factory.
 - Automatic method-and-route instrumentation with abort and unmatched tracking.
 - Bounded rolling in-memory metrics storage.
@@ -19,6 +20,9 @@ All notable changes will be documented here. This project follows Semantic Versi
 ### Changed
 
 - Refreshed the dashboard with a minimalist high-contrast design, responsive metric cards, route method badges, latency indicators, and clearer live status feedback.
+- Changed dashboard throughput from RPS to average RPM and added accessible explanations to every route-table heading.
+- Changed aggregation to use completed buckets exclusively across counts, rates, latency, percentiles, errors, unmatched traffic, and trends.
+- Moved the metrics endpoint to schema v2 with explicit warm-up state and effective completed-window metadata.
 
 ### Known limitations
 

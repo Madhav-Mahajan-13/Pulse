@@ -38,6 +38,7 @@
     "compat",
     "dist",
     "LICENSE",
+    "MANUAL.md",
     "README.md"
   ],
   "engines": {

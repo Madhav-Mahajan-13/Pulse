@@ -17,7 +17,7 @@ Local result on 2026-08-30:
 - Node.js: 22.14.0
 - CPU: AMD Ryzen 7 5800H, 16 logical processors
 - Requests: 4,000 per server per round, concurrency 32
-- Measured median p95 overhead: 0.491 ms
+- Measured median p95 overhead: 0.735 ms after complete-bucket aggregation changes
 - Result: pass
 
 The GitHub Actions result is the release reference because shared-runner hardware is documented by the workflow run itself.
@@ -42,9 +42,9 @@ Local release result on 2026-08-30:
 
 - Simulated requests: 3,600,000
 - Retained routes: 50
-- Heap at retention fill: 7,918,264 bytes
-- Peak heap after retention fill: 8,014,400 bytes
-- Post-fill growth: 96,136 bytes
+- Heap at retention fill: 7,928,368 bytes
+- Peak heap after retention fill: 8,039,872 bytes
+- Post-fill growth: 111,504 bytes
 - Allowed post-fill growth: 10,485,760 bytes
 - Result: pass
 

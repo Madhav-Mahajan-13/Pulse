@@ -5,7 +5,7 @@ import { canonicalPath } from "../http/path.js";
 import type { MetricsSnapshot } from "../storage/rolling-store.js";
 import { renderDashboard } from "./dashboard.js";
 
-export const METRICS_SCHEMA_VERSION = 1;
+export const METRICS_SCHEMA_VERSION = 2;
 
 export interface MetricsReader {
   query(windowSeconds?: number): MetricsSnapshot;

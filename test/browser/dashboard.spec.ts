@@ -30,6 +30,15 @@ test("renders live route metrics without external assets or browser errors", asy
   }
   await expect(
     page.getByRole("img", { name: "Recent request trend" }).first(),
+  ).toBeVisible({ timeout: 10_000 });
+  const rpmHeading = page
+    .locator(".column-help")
+    .filter({ hasText: "Avg RPM" });
+  await rpmHeading.hover();
+  await expect(
+    page.getByRole("tooltip", {
+      name: "Average matched requests per minute across the selected rolling window.",
+    }),
   ).toBeVisible();
   await expect(page.locator("#status")).toHaveAttribute("data-state", "ok");
 
@@ -46,4 +55,40 @@ test("remains usable at a mobile viewport", async ({ page }) => {
   ).toBeVisible();
   await expect(page.getByRole("table")).toBeVisible();
   await expect(page.locator("main")).toHaveCSS("width", "358px");
+});
+
+test("shows an explicit route warm-up state instead of zero metrics", async ({
+  page,
+}) => {
+  await page.route("**/nodepulse/metrics.json?**", async (route) => {
+    await route.fulfill({
+      contentType: "application/json",
+      body: JSON.stringify({
+        schemaVersion: 2,
+        generatedAtMs: Date.now(),
+        aggregationState: "warming_up",
+        windowSeconds: 60,
+        effectiveWindowSeconds: 0,
+        bucketSizeSeconds: 60,
+        routes: [
+          {
+            routeKey: "GET /warming",
+            aggregationState: "warming_up",
+            requestCount: null,
+          },
+        ],
+        unmatched: {
+          routeKey: "unmatched",
+          aggregationState: "warming_up",
+          requestCount: null,
+        },
+      }),
+    });
+  });
+
+  await page.goto("/nodepulse");
+
+  const row = page.getByRole("row").filter({ hasText: "/warming" });
+  await expect(row).toContainText("Warming up");
+  await expect(row).not.toContainText("0 ms");
 });

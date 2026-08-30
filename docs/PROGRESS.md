@@ -156,3 +156,48 @@ The dependency audit currently reports one low-severity advisory in esbuild 0.27
 ### Plain-language status
 
 The dashboard now feels like a focused product interface instead of a basic metrics table, while staying fast, private, and usable on desktop and mobile.
+
+## 2026-08-30 — Dashboard RPM and metric guidance completed
+
+### Completed
+
+- Changed the dashboard throughput display from RPS to average RPM for easier reading on lower-traffic applications.
+- Kept the JSON API's existing `requestsPerSecond` field stable and performed the conversion only in the dashboard.
+- Added concise explanations to every table heading on mouse hover and keyboard focus.
+- Documented that RPM covers the selected window and that aborted requests do not affect completed-request latency.
+
+### Plain-language status
+
+The dashboard now expresses traffic in a friendlier unit and explains each metric in place without making the table visually busy.
+
+## 2026-08-30 — Complete-bucket-only reporting completed
+
+### Completed
+
+- Anchored buckets to NodePulse startup so no shortened first interval is reported.
+- Excluded the active bucket uniformly from traffic, latency, percentile, error, unmatched, and trend calculations.
+- Made the dashboard combine all completed buckets available in the retention window.
+- Added honest early-window handling through `effectiveWindowSeconds` instead of padding pre-start time with zeroes.
+- Preserved completed zero-request intervals while leaving latency and error statistics empty when no response samples exist.
+- Added explicit `warming_up` and `ready` states and advanced the JSON contract to schema v2.
+- Kept idle routes visible with zero traffic until their last activity leaves retention.
+- Passed 51 automated tests and 3 Chromium dashboard scenarios.
+- Maintained 95.3% line coverage, 91.48% branch coverage, and 100% function coverage.
+- Repassed the `<1 ms p95` overhead gate at 0.735 ms and the 3.6-million-request memory gate with 111,504 bytes of post-fill growth.
+
+### Plain-language status
+
+Every number shown for a route now comes from the same set of fully finished time buckets. Values change only when a bucket closes, so the dashboard cannot mix partial live traffic with completed historical measurements.
+
+## 2026-08-30 — Product and developer manual completed
+
+### Completed
+
+- Added a plain-language manual covering installation, middleware placement, architecture, request flow, route normalization, in-memory storage, completed buckets, formulas, histograms, API schema, configuration, and limitations.
+- Added text diagrams and worked examples that remain readable in terminals and basic Markdown viewers.
+- Documented the complete repository structure and the responsibility of every product, test, build, benchmark, and documentation area.
+- Added development, packaging, troubleshooting, and security guidance in one place.
+
+### Plain-language status
+
+A new developer can now understand how NodePulse works, find the correct source file, run the project, and reason about each dashboard number without first reading the entire codebase.

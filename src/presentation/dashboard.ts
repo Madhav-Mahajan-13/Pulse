@@ -73,6 +73,7 @@ export function renderDashboard(options: DashboardOptions): string {
     .card:nth-child(2) .label, .card:nth-child(2) .card-note { color: rgb(16 17 5 / 62%); }
     .label { color: var(--muted); font-size: .68rem; font-weight: 800; letter-spacing: .12em; text-transform: uppercase; }
     .value { display: block; margin-top: 16px; font-size: clamp(2rem, 5vw, 3.2rem); font-weight: 760; letter-spacing: -.06em; line-height: 1; font-variant-numeric: tabular-nums; }
+    .value[data-state="warming_up"] { font-size: clamp(1.15rem, 3vw, 1.55rem); letter-spacing: -.035em; }
     .card-note { position: absolute; bottom: 18px; left: 20px; color: #6f6e75; font-size: .68rem; }
     .panel { overflow: hidden; border-radius: 18px; }
     .panel-header { display: flex; align-items: center; justify-content: space-between; gap: 16px; padding: 21px 22px; border-bottom: 1px solid var(--line); }
@@ -85,6 +86,39 @@ export function renderDashboard(options: DashboardOptions): string {
     th, td { padding: 15px 18px; border-bottom: 1px solid var(--line); text-align: right; white-space: nowrap; }
     th { color: #706f76; font-size: .64rem; font-weight: 800; letter-spacing: .11em; text-transform: uppercase; }
     th:first-child, td:first-child { text-align: left; }
+    .column-help { position: relative; display: inline-flex; align-items: center; gap: 5px; outline: none; cursor: help; }
+    .column-help::after { width: 3px; height: 3px; border-radius: 50%; background: #77767d; content: ""; }
+    .column-help:focus-visible { color: var(--ink); }
+    .tooltip {
+      position: absolute;
+      top: calc(100% + 12px);
+      left: 50%;
+      z-index: 5;
+      width: max-content;
+      max-width: 220px;
+      padding: 9px 11px;
+      border: 1px solid #3b3a40;
+      border-radius: 8px;
+      background: #f4f3ee;
+      box-shadow: 0 10px 30px rgb(0 0 0 / 35%);
+      color: #161619;
+      font-size: .7rem;
+      font-weight: 600;
+      letter-spacing: 0;
+      line-height: 1.4;
+      text-align: left;
+      text-transform: none;
+      white-space: normal;
+      opacity: 0;
+      pointer-events: none;
+      transform: translate(-50%, -4px);
+      transition: opacity 120ms ease, transform 120ms ease;
+    }
+    .column-help:hover .tooltip, .column-help:focus .tooltip { opacity: 1; transform: translate(-50%, 0); }
+    th:first-child .tooltip { left: 0; transform: translate(0, -4px); }
+    th:first-child .column-help:hover .tooltip, th:first-child .column-help:focus .tooltip { transform: translate(0, 0); }
+    th:last-child .tooltip { right: 0; left: auto; transform: translate(0, -4px); }
+    th:last-child .column-help:hover .tooltip, th:last-child .column-help:focus .tooltip { transform: translate(0, 0); }
     tbody tr:last-child td { border-bottom: 0; }
     tbody tr { transition: background-color 140ms ease; }
     tbody tr:hover { background: rgb(255 255 255 / 2.5%); }
@@ -100,6 +134,7 @@ export function renderDashboard(options: DashboardOptions): string {
     .sparkline { display: block; width: 92px; height: 28px; overflow: visible; }
     .empty { padding: 56px 20px; color: var(--muted); font-size: .85rem; text-align: center; }
     .error-rate[data-alert="true"] { color: #ff8e89; font-weight: 750; }
+    .warming { color: var(--muted); font-size: .76rem; text-align: center; }
     @keyframes pulse { 50% { opacity: .35; transform: scale(.75); } }
     @media (prefers-reduced-motion: reduce) { *, *::before, *::after { scroll-behavior: auto !important; animation-duration: .01ms !important; animation-iteration-count: 1 !important; transition-duration: .01ms !important; } }
     @media (max-width: 720px) {
@@ -142,10 +177,17 @@ export function renderDashboard(options: DashboardOptions): string {
       <div class="panel-header"><div class="panel-title"><h2>Route performance</h2></div><span id="window-label"></span></div>
       <div class="table-wrap">
         <table>
-          <thead><tr><th>Route</th><th>RPS</th><th>Average</th><th>p95</th><th>Errors</th><th>Recent trend</th></tr></thead>
+          <thead><tr>
+            <th><span class="column-help" tabindex="0" aria-describedby="tip-route">Route<span class="tooltip" id="tip-route" role="tooltip">Normalized Express route, grouped separately by HTTP method.</span></span></th>
+            <th><span class="column-help" tabindex="0" aria-describedby="tip-rpm">Avg RPM<span class="tooltip" id="tip-rpm" role="tooltip">Average matched requests per minute across the selected rolling window.</span></span></th>
+            <th><span class="column-help" tabindex="0" aria-describedby="tip-average">Average<span class="tooltip" id="tip-average" role="tooltip">Mean response time for completed requests. Aborted requests are excluded.</span></span></th>
+            <th><span class="column-help" tabindex="0" aria-describedby="tip-p95">p95<span class="tooltip" id="tip-p95" role="tooltip">95% of completed requests were this fast or faster. Estimated from latency buckets.</span></span></th>
+            <th><span class="column-help" tabindex="0" aria-describedby="tip-errors">Errors<span class="tooltip" id="tip-errors" role="tooltip">Percentage of completed responses meeting the configured error-status threshold.</span></span></th>
+            <th><span class="column-help" tabindex="0" aria-describedby="tip-trend">Recent trend<span class="tooltip" id="tip-trend" role="tooltip">Request volume by time bucket, from oldest to newest.</span></span></th>
+          </tr></thead>
           <tbody id="routes"></tbody>
         </table>
-        <div class="empty" id="empty" hidden>No completed application requests in this window.</div>
+        <div class="empty" id="empty" hidden></div>
       </div>
     </section>
   </main>
@@ -183,12 +225,27 @@ export function renderDashboard(options: DashboardOptions): string {
 
     function render(payload) {
       byId("route-count").textContent = number.format(payload.routes.length);
-      byId("request-count").textContent = number.format(payload.routes.reduce((sum, route) => sum + route.requestCount, 0));
-      byId("unmatched-count").textContent = number.format(payload.unmatched.requestCount);
-      byId("window-label").textContent = "Rolling " + number.format(payload.windowSeconds / 60) + " min window";
+      const isWarmingUp = payload.aggregationState === "warming_up";
+      byId("request-count").dataset.state = payload.aggregationState;
+      byId("unmatched-count").dataset.state = payload.unmatched.aggregationState;
+      byId("request-count").textContent = isWarmingUp
+        ? "Warming up"
+        : number.format(payload.routes.reduce((sum, route) => sum + (route.requestCount ?? 0), 0));
+      byId("unmatched-count").textContent = payload.unmatched.requestCount === null
+        ? "Warming up"
+        : number.format(payload.unmatched.requestCount);
+      const effectiveMinutes = payload.effectiveWindowSeconds / 60;
+      const requestedMinutes = payload.windowSeconds / 60;
+      byId("window-label").textContent = isWarmingUp
+        ? "Waiting for the first " + number.format(payload.bucketSizeSeconds) + "s bucket"
+        : "Completed " + number.format(effectiveMinutes) + " of " + number.format(requestedMinutes) + " min";
       const body = byId("routes");
       body.replaceChildren();
-      byId("empty").hidden = payload.routes.length !== 0;
+      const empty = byId("empty");
+      empty.hidden = payload.routes.length !== 0;
+      empty.textContent = isWarmingUp
+        ? "Warming up — metrics appear after the first complete bucket."
+        : "No application routes are tracked in this completed window.";
 
       for (const route of payload.routes) {
         const row = document.createElement("tr");
@@ -207,7 +264,14 @@ export function renderDashboard(options: DashboardOptions): string {
         routeWrap.append(methodBadge, code);
         routeCell.append(routeWrap);
         row.append(routeCell);
-        row.append(textCell(number.format(route.requestsPerSecond)));
+        if (route.aggregationState === "warming_up") {
+          const warmingCell = textCell("Warming up — waiting for this route's first complete bucket", "warming");
+          warmingCell.colSpan = 5;
+          row.append(warmingCell);
+          body.append(row);
+          continue;
+        }
+        row.append(textCell(number.format((route.requestsPerSecond ?? 0) * 60)));
         row.append(textCell(route.averageResponseTimeMs === null ? "—" : number.format(route.averageResponseTimeMs) + " ms"));
         const latencyCell = document.createElement("td");
         if (route.p95ResponseTimeMs === null) {
@@ -227,11 +291,11 @@ export function renderDashboard(options: DashboardOptions): string {
           latencyCell.append(latency);
         }
         row.append(latencyCell);
-        const errorCell = textCell(number.format(route.errorRate * 100) + "%", "error-rate");
-        errorCell.dataset.alert = String(route.errorRate > 0);
+        const errorCell = textCell(route.errorRate === null ? "—" : number.format(route.errorRate * 100) + "%", "error-rate");
+        errorCell.dataset.alert = String(route.errorRate !== null && route.errorRate > 0);
         row.append(errorCell);
         const trendCell = document.createElement("td");
-        trendCell.append(sparkline(route.recentRequestCounts));
+        trendCell.append(sparkline(route.recentRequestCounts ?? []));
         row.append(trendCell);
         body.append(row);
       }

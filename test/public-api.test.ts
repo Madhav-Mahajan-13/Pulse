@@ -1,12 +1,16 @@
 import express from "express";
 import request from "supertest";
-import { describe, expect, it } from "vitest";
+import { afterEach, describe, expect, it, vi } from "vitest";
 
 import nodepulse from "../src/index.js";
 import { renderDashboard } from "../src/presentation/dashboard.js";
 
+afterEach(() => vi.useRealTimers());
+
 describe("nodepulse public middleware", () => {
   it("records application traffic and exposes versioned JSON metrics", async () => {
+    vi.useFakeTimers({ toFake: ["Date"] });
+    vi.setSystemTime(0);
     const app = express();
     app.use(nodepulse({ retentionMinutes: 1 }));
     app.get("/users/:id", (_request, response) =>
@@ -15,34 +19,46 @@ describe("nodepulse public middleware", () => {
 
     await request(app).get("/users/123").expect(200);
     await request(app).get("/users/456").expect(200);
+    vi.setSystemTime(60_000);
     const metrics = await request(app)
       .get("/nodepulse/metrics.json?windowSeconds=60")
       .expect("Content-Type", /json/)
       .expect(200);
 
     expect(metrics.body).toMatchObject({
-      schemaVersion: 1,
+      schemaVersion: 2,
+      aggregationState: "ready",
       windowSeconds: 60,
+      effectiveWindowSeconds: 60,
+      bucketSizeSeconds: 60,
       routes: [
         {
           routeKey: "GET /users/:id",
+          aggregationState: "ready",
           requestCount: 2,
           completedCount: 2,
           errorCount: 0,
           abortedCount: 0,
         },
       ],
-      unmatched: { routeKey: "unmatched", requestCount: 0 },
+      unmatched: {
+        routeKey: "unmatched",
+        aggregationState: "ready",
+        requestCount: 0,
+      },
     });
     expect(metrics.headers["cache-control"]).toBe("no-store");
   });
 
   it("does not include dashboard or JSON polling in application metrics", async () => {
+    vi.useFakeTimers({ toFake: ["Date"] });
+    vi.setSystemTime(0);
     const app = express();
     app.use(nodepulse({ retentionMinutes: 1 }));
 
     await request(app).get("/nodepulse").expect(200);
     await request(app).get("/nodepulse/metrics.json").expect(200);
+    vi.setSystemTime(60_000);
     const metrics = await request(app)
       .get("/nodepulse/metrics.json")
       .expect(200);

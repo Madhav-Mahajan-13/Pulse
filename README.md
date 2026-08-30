@@ -52,7 +52,9 @@ app.use("/nodepulse", requireAuth);
 app.use(nodepulse());
 ```
 
-The dashboard is served at `/nodepulse`. Raw metrics are available at `/nodepulse/metrics.json`; a bucket-aligned sub-window can be requested with `?windowSeconds=300`.
+The dashboard is served at `/nodepulse`. Raw schema-v2 metrics are available at `/nodepulse/metrics.json`; a bucket-aligned sub-window can be requested with `?windowSeconds=300`.
+
+NodePulse reports completed buckets only. With the default 60-second bucket, the first metrics appear after one full minute and then update once per minute. The dashboard combines every completed bucket available in the configured retention window; the active bucket is never mixed into counts, RPM, latency, percentiles, errors, or trends.
 
 ## Configuration
 
@@ -84,4 +86,4 @@ npm.cmd run benchmark:overhead
 npm.cmd run benchmark:memory
 ```
 
-The frozen requirements are recorded in [`SRS_BASELINE.md`](./SRS_BASELINE.md). Architecture, benchmark methodology, and progress notes live under [`docs`](./docs/).
+The complete plain-language product and developer guide is in [`MANUAL.md`](./MANUAL.md). The frozen requirements are recorded in [`SRS_BASELINE.md`](./SRS_BASELINE.md). Architecture, benchmark methodology, and progress notes live under [`docs`](./docs/).

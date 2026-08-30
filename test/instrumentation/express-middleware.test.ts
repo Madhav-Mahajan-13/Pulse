@@ -17,15 +17,22 @@ function createHarness(
   configOverrides: Parameters<typeof resolveConfig>[0] = {},
 ) {
   const config = resolveConfig(configOverrides);
-  const store = new RollingMetricsStore(config);
+  let nowMs = 0;
+  const store = new RollingMetricsStore(config, () => nowMs);
   const app = express();
   app.use(createInstrumentationMiddleware(config, store));
-  return { app, store };
+  return {
+    app,
+    store,
+    closeBucket: () => {
+      nowMs += config.bucketSizeSeconds * 1_000;
+    },
+  };
 }
 
 describe("Express instrumentation", () => {
   it("normalizes route parameters and separates HTTP methods", async () => {
-    const { app, store } = createHarness();
+    const { app, store, closeBucket } = createHarness();
     app.get("/users/:id", (_request, response) =>
       response.status(200).send("ok"),
     );
@@ -35,6 +42,7 @@ describe("Express instrumentation", () => {
 
     await request(app).get("/users/123?expanded=true").expect(200);
     await request(app).post("/users/456").expect(201);
+    closeBucket();
 
     expect(store.query(60).routes.map(({ routeKey }) => routeKey)).toEqual([
       "GET /users/:id",
@@ -43,12 +51,13 @@ describe("Express instrumentation", () => {
   });
 
   it("includes a statically mounted router base path", async () => {
-    const { app, store } = createHarness();
+    const { app, store, closeBucket } = createHarness();
     const router = express.Router();
     router.get("/orders/:orderId", (_request, response) => response.send("ok"));
     app.use("/api", router);
 
     await request(app).get("/api/orders/42").expect(200);
+    closeBucket();
 
     expect(store.query(60).routes[0]?.routeKey).toBe(
       "GET /api/orders/:orderId",
@@ -56,12 +65,13 @@ describe("Express instrumentation", () => {
   });
 
   it("preserves named parameters from a merged router mount", async () => {
-    const { app, store } = createHarness();
+    const { app, store, closeBucket } = createHarness();
     const router = express.Router({ mergeParams: true });
     router.get("/orders/:orderId", (_request, response) => response.send("ok"));
     app.use("/accounts/:accountId", router);
 
     await request(app).get("/accounts/42/orders/7").expect(200);
+    closeBucket();
 
     expect(store.query(60).routes[0]?.routeKey).toBe(
       "GET /accounts/:accountId/orders/:orderId",
@@ -69,13 +79,14 @@ describe("Express instrumentation", () => {
   });
 
   it("uses a stable fallback for ID-shaped mounts without merged parameters", async () => {
-    const { app, store } = createHarness();
+    const { app, store, closeBucket } = createHarness();
     const router = express.Router();
     router.get("/orders/:orderId", (_request, response) => response.send("ok"));
     app.use("/accounts/:accountId", router);
 
     await request(app).get("/accounts/42/orders/7").expect(200);
     await request(app).get("/accounts/99/orders/8").expect(200);
+    closeBucket();
 
     expect(store.query(60).routes).toMatchObject([
       {
@@ -86,11 +97,12 @@ describe("Express instrumentation", () => {
   });
 
   it("records error responses and unmatched status counts", async () => {
-    const { app, store } = createHarness();
+    const { app, store, closeBucket } = createHarness();
     app.get("/failure", (_request, response) => response.sendStatus(503));
 
     await request(app).get("/failure").expect(503);
     await request(app).get("/missing").expect(404);
+    closeBucket();
 
     const snapshot = store.query(60);
     expect(snapshot.routes[0]).toMatchObject({
@@ -125,7 +137,8 @@ describe("Express instrumentation", () => {
 
   it("records close-before-finish once as an abort", () => {
     const config = resolveConfig();
-    const store = new RollingMetricsStore(config, () => 0);
+    let nowMs = 0;
+    const store = new RollingMetricsStore(config, () => nowMs);
     const response = new FakeResponse();
     const expressRequest = {
       path: "/jobs/123",
@@ -142,6 +155,7 @@ describe("Express instrumentation", () => {
     );
     response.emit("close");
     response.emit("finish");
+    nowMs = 60_000;
 
     expect(store.query(60).routes[0]).toMatchObject({
       requestCount: 1,

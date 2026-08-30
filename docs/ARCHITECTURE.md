@@ -14,10 +14,13 @@ The first implementation slice contains configuration validation and the fixed-b
 
 ## Rolling store
 
-- Buckets are aligned to the configured wall-clock interval and created only when data arrives.
-- Each matched route owns at most the configured number of retained buckets.
+- Buckets are anchored to NodePulse startup, so the first reported interval is always a full bucket.
+- Active buckets accept metric events but are excluded completely from every aggregate query.
+- Queries combine all completed buckets in the requested window and expose the completed duration as `effectiveWindowSeconds` when server uptime is shorter than that window.
+- Missing completed buckets for a retained route are explicit zero-request intervals. They affect the rate denominator but never invent latency or error samples.
+- Each matched route owns at most the configured number of completed retained buckets plus its active bucket.
 - The matched-route map is capped by `maxTrackedRoutes`; additional keys share the reserved `other` series.
-- Empty route series are removed after retention expiry, allowing their cardinality slots to be reused.
+- Idle routes continue to report completed zero-request intervals until their last activity expires, then their cardinality slots are reused.
 - Aborted requests count toward traffic and `abortedCount`, but not completed latency or error-rate calculations.
 - Unmatched requests use a separate bucket shape containing request and status counts only.
 - Unmatched status codes are capped at 32 distinct values per bucket and per aggregate query; excess values use the `other` status entry.
@@ -48,7 +51,8 @@ An arbitrary short slug on a router without `mergeParams` cannot be distinguishe
 
 - `nodepulse(options?)` validates configuration once and creates one private store per middleware instance.
 - Presentation handles the configured dashboard and JSON paths before instrumentation, keeping self-traffic out of metrics.
-- The JSON response carries `schemaVersion: 1` and accepts bucket-aligned `windowSeconds` queries.
+- The JSON response carries `schemaVersion: 2`, explicit `warming_up`/`ready` states, nullable warm-up metrics, `bucketSizeSeconds`, and `effectiveWindowSeconds`.
+- The dashboard requests the full retention window and combines every completed bucket available within it. No displayed route metric includes the active bucket.
 - Invalid windows return a structured HTTP 400 response; non-read methods on owned endpoints return HTTP 405.
 - The dashboard contains inline CSS and JavaScript only, polls every five seconds, and builds route rows with DOM text nodes to avoid HTML injection.
 - Dashboard responses set no-store, content-type, framing, referrer, and content-security headers.

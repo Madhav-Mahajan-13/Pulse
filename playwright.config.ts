@@ -18,7 +18,7 @@ export default defineConfig({
   webServer: {
     command: "node examples/basic-app.mjs",
     url: "http://127.0.0.1:3100/nodepulse",
-    env: { PORT: "3100" },
+    env: { PORT: "3100", NODEPULSE_BUCKET_SIZE_SECONDS: "1" },
     reuseExistingServer: false,
     timeout: 30_000,
   },
