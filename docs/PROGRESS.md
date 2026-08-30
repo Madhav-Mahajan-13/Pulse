@@ -202,6 +202,20 @@ Every number shown for a route now comes from the same set of fully finished tim
 
 A new developer can now understand how NodePulse works, find the correct source file, run the project, and reason about each dashboard number without first reading the entire codebase.
 
+## 2026-08-30 — npm landing page completed
+
+### Completed
+
+- Replaced the short internal-style README with a self-sufficient npm product page.
+- Added an authentic dashboard screenshot generated from the packaged example application.
+- Added clear installation, CommonJS/ESM, existing-app middleware ordering, dashboard metric, completed-bucket, configuration, route aggregation, JSON API, security, storage, memory, limitation, and documentation sections.
+- Included the screenshot in the package allow-list so the npm README can load it from the public package CDN.
+- Prepared documentation-only patch release `1.0.1` because published npm versions are immutable.
+
+### Plain-language status
+
+A developer discovering NodePulse on npm can now understand what it does, see the real dashboard, install it correctly, evaluate its tradeoffs, and use it without leaving the package page.
+
 ## 2026-08-30 — Version 1 npm release preparation
 
 ### Completed

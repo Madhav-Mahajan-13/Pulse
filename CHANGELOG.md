@@ -1,6 +1,16 @@
 # Changelog
 
-All notable changes will be documented here. This project follows Semantic Versioning and uses prerelease identifiers while the public contract is being validated.
+All notable changes are documented here. NodePulse follows Semantic Versioning.
+
+## [1.0.1] - 2026-08-30
+
+### Added
+
+- Actual dashboard screenshot in the published package and npm README.
+
+### Changed
+
+- Rewrote the README as a complete npm landing page with installation, integration order, metric explanations, completed-bucket behavior, configuration, JSON schema, security, storage, limitations, and documentation links.
 
 ## [1.0.0] - 2026-08-30
 

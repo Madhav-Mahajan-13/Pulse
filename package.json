@@ -1,6 +1,6 @@
 {
   "name": "@madhavmahajan132/nodepulse",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "description": "Zero-configuration application performance monitoring for Node.js and Express.",
   "license": "MIT",
   "repository": {
@@ -43,6 +43,7 @@
     "CHANGELOG.md",
     "compat",
     "dist",
+    "docs/assets/dashboard.png",
     "LICENSE",
     "MANUAL.md",
     "README.md"
