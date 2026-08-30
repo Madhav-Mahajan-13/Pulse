@@ -16,12 +16,13 @@
 - [x] Canonical GitHub repository created at `Madhav-Mahajan-13/Pulse`.
 - [x] `repository`, `homepage`, and `bugs` package metadata added.
 - [x] Package promoted to version `1.0.0` and the private publish guard removed.
-- [x] The unscoped `nodepulse` name returned registry 404 immediately before release preparation.
+- [x] npm rejected the unscoped `nodepulse` name as too similar to the existing `node-pulse` package.
+- [x] Adopted npm's recommended owned scope: `@madhavmahajan132/nodepulse`.
 - [ ] Make the GitHub repository publicly readable so npm source links and provenance can be verified.
 - [ ] Push the local v1 release commits and confirm hosted CI passes on `main`.
 - [ ] Enable GitHub private vulnerability reporting.
 - [ ] Log this machine into npm with an account protected by 2FA.
-- [ ] Publish `nodepulse@1.0.0` publicly with the `latest` dist-tag.
+- [ ] Publish `@madhavmahajan132/nodepulse@1.0.0` publicly with the `latest` dist-tag.
 - [ ] Verify the registry metadata and install the published package in a clean consumer.
 - [ ] Configure npm trusted publishing for `.github/workflows/publish.yml` after the first package version exists.
 - [ ] Create and push the signed or annotated `v1.0.0` Git tag and GitHub release.
@@ -33,8 +34,8 @@ The initial package creation must be performed by an authenticated npm owner. Pr
 ## Release identity
 
 - Version: `1.0.0`
-- Package: `nodepulse`
-- Local artifact: `artifacts/nodepulse-1.0.0.tgz` (70,706 bytes)
-- Artifact SHA-256: `5D415D42F0708911C0CD2CABEF1FCED443982055C339E53D35296FC306C6879B`
+- Package: `@madhavmahajan132/nodepulse`
+- Local artifact: `artifacts/madhavmahajan132-nodepulse-1.0.0.tgz` (70,793 bytes)
+- Artifact SHA-256: `08F6F87DF1F0693C127123E5762322D584C818D00864D261B79869CAF843EE6D`
 - GitHub: `https://github.com/Madhav-Mahajan-13/Pulse`
 - Requirements baseline: SRS 0.3 plus the approved complete-bucket reporting decision in `SRS_BASELINE.md`.

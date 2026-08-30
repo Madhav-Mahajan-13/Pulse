@@ -1,5 +1,5 @@
 {
-  "name": "nodepulse",
+  "name": "@madhavmahajan132/nodepulse",
   "version": "1.0.0",
   "description": "Zero-configuration application performance monitoring for Node.js and Express.",
   "license": "MIT",

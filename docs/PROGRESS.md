@@ -222,3 +222,7 @@ A new developer can now understand how NodePulse works, find the correct source 
 ### Plain-language status
 
 The code and package metadata are being finalized as version 1.0.0. Publication now depends on GitHub visibility and npm account authentication rather than product implementation work.
+
+### Package-name resolution
+
+npm rejected the unscoped `nodepulse` name because it was too similar to the existing `node-pulse` package. Following npm's registry recommendation, the release identity was changed to the public owned scope `@madhavmahajan132/nodepulse`. The scoped 70,793-byte release artifact has SHA-256 `08F6F87DF1F0693C127123E5762322D584C818D00864D261B79869CAF843EE6D`.

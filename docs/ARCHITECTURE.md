@@ -56,7 +56,7 @@ An arbitrary short slug on a router without `mergeParams` cannot be distinguishe
 - Invalid windows return a structured HTTP 400 response; non-read methods on owned endpoints return HTTP 405.
 - The dashboard contains inline CSS and JavaScript only, polls every five seconds, and builds route rows with DOM text nodes to avoid HTML injection.
 - Dashboard responses set no-store, content-type, framing, referrer, and content-security headers.
-- ESM imports use the generated ESM bundle. CommonJS uses a small compatibility facade so `require("nodepulse")` returns the function directly rather than a `{ default }` wrapper.
+- ESM imports use the generated ESM bundle. CommonJS uses a small compatibility facade so `require("@madhavmahajan132/nodepulse")` returns the function directly rather than a `{ default }` wrapper.
 
 ## Release gates
 

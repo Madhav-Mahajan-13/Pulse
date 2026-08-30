@@ -42,19 +42,19 @@ try {
   await Promise.all([
     writeFile(
       join(consumerRoot, "consumer.mjs"),
-      'import express from "express";\nimport nodepulse from "nodepulse";\nconst app = express();\napp.use(nodepulse({ retentionMinutes: 1 }));\nif (typeof nodepulse !== "function") throw new Error("ESM export is not a function");\n',
+      'import express from "express";\nimport nodepulse from "@madhavmahajan132/nodepulse";\nconst app = express();\napp.use(nodepulse({ retentionMinutes: 1 }));\nif (typeof nodepulse !== "function") throw new Error("ESM export is not a function");\n',
     ),
     writeFile(
       join(consumerRoot, "consumer.cjs"),
-      'const express = require("express");\nconst nodepulse = require("nodepulse");\nconst app = express();\napp.use(nodepulse({ retentionMinutes: 1 }));\nif (typeof nodepulse !== "function") throw new Error("CJS export is not a function");\n',
+      'const express = require("express");\nconst nodepulse = require("@madhavmahajan132/nodepulse");\nconst app = express();\napp.use(nodepulse({ retentionMinutes: 1 }));\nif (typeof nodepulse !== "function") throw new Error("CJS export is not a function");\n',
     ),
     writeFile(
       join(consumerRoot, "consumer.mts"),
-      'import express from "express";\nimport nodepulse from "nodepulse";\nexpress().use(nodepulse({ retentionMinutes: 1 }));\n',
+      'import express from "express";\nimport nodepulse from "@madhavmahajan132/nodepulse";\nexpress().use(nodepulse({ retentionMinutes: 1 }));\n',
     ),
     writeFile(
       join(consumerRoot, "consumer.cts"),
-      'import express = require("express");\nimport nodepulse = require("nodepulse");\nexpress().use(nodepulse({ retentionMinutes: 1 }));\n',
+      'import express = require("express");\nimport nodepulse = require("@madhavmahajan132/nodepulse");\nexpress().use(nodepulse({ retentionMinutes: 1 }));\n',
     ),
     writeFile(
       join(consumerRoot, "tsconfig.json"),

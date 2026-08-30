@@ -5,7 +5,7 @@ Zero-configuration, self-hosted application performance monitoring for Node.js a
 NodePulse v1 provides a public Express middleware, bounded rolling metrics engine, schema-v2 JSON endpoint, and self-contained dashboard. It supports Node.js 22+ and Express 4/5.
 
 ```powershell
-npm.cmd install nodepulse
+npm.cmd install @madhavmahajan132/nodepulse
 ```
 
 > **Security:** The dashboard and JSON endpoint have no built-in authentication. Never expose them publicly without placing your own authentication middleware before NodePulse.
@@ -33,7 +33,7 @@ ES modules:
 
 ```js
 import express from "express";
-import nodepulse from "nodepulse";
+import nodepulse from "@madhavmahajan132/nodepulse";
 
 const app = express();
 app.use(nodepulse());
@@ -43,7 +43,7 @@ CommonJS:
 
 ```js
 const express = require("express");
-const nodepulse = require("nodepulse");
+const nodepulse = require("@madhavmahajan132/nodepulse");
 
 const app = express();
 app.use(nodepulse());

@@ -38,7 +38,7 @@ npm.cmd pack --pack-destination artifacts
 Install the resulting package inside another Express project:
 
 ```powershell
-npm.cmd install --force "..\Pulse\artifacts\nodepulse-1.0.0.tgz"
+npm.cmd install --force "..\Pulse\artifacts\madhavmahajan132-nodepulse-1.0.0.tgz"
 ```
 
 ### Add it to an Express application
@@ -47,7 +47,7 @@ CommonJS:
 
 ```js
 const express = require("express");
-const nodepulse = require("nodepulse");
+const nodepulse = require("@madhavmahajan132/nodepulse");
 
 const app = express();
 
@@ -62,7 +62,7 @@ ES modules:
 
 ```js
 import express from "express";
-import nodepulse from "nodepulse";
+import nodepulse from "@madhavmahajan132/nodepulse";
 
 const app = express();
 app.use(nodepulse());
@@ -777,18 +777,18 @@ TypeScript source
       ├── dist/index.d.ts    ESM types
       └── source maps
 
-compat/index.cjs             direct require("nodepulse") facade
+compat/index.cjs             direct CommonJS require facade
 compat/index.d.cts           CommonJS declaration facade
 ```
 
 The package export map makes both forms work:
 
 ```js
-import nodepulse from "nodepulse";
+import nodepulse from "@madhavmahajan132/nodepulse";
 ```
 
 ```js
-const nodepulse = require("nodepulse");
+const nodepulse = require("@madhavmahajan132/nodepulse");
 ```
 
 Consumers receive compiled JavaScript and type declarations. They do not need to use TypeScript themselves.

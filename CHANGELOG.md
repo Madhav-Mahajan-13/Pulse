@@ -19,6 +19,7 @@ All notable changes will be documented here. This project follows Semantic Versi
 
 ### Changed
 
+- Adopted the npm package identity `@madhavmahajan132/nodepulse` after the registry rejected the unscoped name as too similar to an existing package.
 - Refreshed the dashboard with a minimalist high-contrast design, responsive metric cards, route method badges, latency indicators, and clearer live status feedback.
 - Changed dashboard throughput from RPS to average RPM and added accessible explanations to every route-table heading.
 - Changed aggregation to use completed buckets exclusively across counts, rates, latency, percentiles, errors, unmatched traffic, and trends.
