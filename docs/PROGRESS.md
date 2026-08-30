@@ -210,7 +210,8 @@ A new developer can now understand how NodePulse works, find the correct source 
 - Added an authentic dashboard screenshot generated from the packaged example application.
 - Added clear installation, CommonJS/ESM, existing-app middleware ordering, dashboard metric, completed-bucket, configuration, route aggregation, JSON API, security, storage, memory, limitation, and documentation sections.
 - Included the screenshot in the package allow-list so the npm README can load it from the public package CDN.
-- Prepared documentation-only patch release `1.0.1` because published npm versions are immutable.
+- Published documentation-only patch release `@madhavmahajan132/nodepulse@1.0.1` because published npm versions are immutable.
+- Verified that npm serves the expanded README and that its dashboard preview loads publicly from the package CDN.
 
 ### Plain-language status
 
