@@ -23,9 +23,11 @@ test("renders live route metrics without external assets or browser errors", asy
   await expect(
     page.getByRole("heading", { name: "NodePulse APM" }),
   ).toBeVisible();
-  await expect(page.getByText("GET /fast", { exact: true })).toBeVisible();
-  await expect(page.getByText("GET /slow/:id", { exact: true })).toBeVisible();
-  await expect(page.getByText("GET /error", { exact: true })).toBeVisible();
+  for (const route of ["/fast", "/slow/:id", "/error"]) {
+    const row = page.getByRole("row").filter({ hasText: route });
+    await expect(row.getByText("GET", { exact: true })).toBeVisible();
+    await expect(row.getByText(route, { exact: true })).toBeVisible();
+  }
   await expect(
     page.getByRole("img", { name: "Recent request trend" }).first(),
   ).toBeVisible();

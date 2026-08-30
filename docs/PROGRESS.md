@@ -142,3 +142,17 @@ The first alpha is packaged and verified locally, but intentionally cannot be pu
 ### Known tooling note
 
 The dependency audit currently reports one low-severity advisory in esbuild 0.27, pulled in by the build tool. It affects running a local development server on Windows; NodePulse does not run that server or ship esbuild to consumers. The upstream build tool currently requires the affected release line, so this will be upgraded when a compatible patched release is available.
+
+## 2026-08-30 — Dashboard visual refresh completed
+
+### Completed
+
+- Reworked the dashboard into a cleaner, more distinctive dark visual system with lime, violet, and coral accents.
+- Added a compact live-connection indicator, clearer metric hierarchy, HTTP method badges, and visual p95 latency bars.
+- Improved table scanning, hover feedback, empty and error states, and small-screen card layout.
+- Kept the dashboard self-contained: no external fonts, scripts, styles, images, or UI dependencies.
+- Preserved semantic HTML, reduced-motion support, safe DOM rendering, and automatic metrics polling.
+
+### Plain-language status
+
+The dashboard now feels like a focused product interface instead of a basic metrics table, while staying fast, private, and usable on desktop and mobile.

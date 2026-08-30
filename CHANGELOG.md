@@ -16,6 +16,10 @@ All notable changes will be documented here. This project follows Semantic Versi
 - Node.js 22/24 and Express 4/5 compatibility matrix.
 - Unit, integration, browser, overhead, and bounded-memory release gates.
 
+### Changed
+
+- Refreshed the dashboard with a minimalist high-contrast design, responsive metric cards, route method badges, latency indicators, and clearer live status feedback.
+
 ### Known limitations
 
 - Metrics are process-local and reset on restart.
