@@ -226,3 +226,9 @@ The code and package metadata are being finalized as version 1.0.0. Publication 
 ### Package-name resolution
 
 npm rejected the unscoped `nodepulse` name because it was too similar to the existing `node-pulse` package. Following npm's registry recommendation, the release identity was changed to the public owned scope `@madhavmahajan132/nodepulse`. The scoped 70,793-byte release artifact has SHA-256 `08F6F87DF1F0693C127123E5762322D584C818D00864D261B79869CAF843EE6D`.
+
+### npm publication
+
+- Published `@madhavmahajan132/nodepulse@1.0.0` through npm's browser-based 2FA flow.
+- Confirmed through authenticated npm access controls that the package is public, owned with read-write access by `madhavmahajan132`, and assigned the `latest` dist-tag.
+- Public anonymous metadata and clean-install verification remain pending while npm propagates the first scoped release.

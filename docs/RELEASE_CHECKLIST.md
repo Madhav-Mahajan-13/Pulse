@@ -21,15 +21,15 @@
 - [ ] Make the GitHub repository publicly readable so npm source links and provenance can be verified.
 - [ ] Push the local v1 release commits and confirm hosted CI passes on `main`.
 - [ ] Enable GitHub private vulnerability reporting.
-- [ ] Log this machine into npm with an account protected by 2FA.
-- [ ] Publish `@madhavmahajan132/nodepulse@1.0.0` publicly with the `latest` dist-tag.
+- [x] Logged this machine into npm as `madhavmahajan132` with publishing 2FA enabled.
+- [x] Published `@madhavmahajan132/nodepulse@1.0.0` publicly with the `latest` dist-tag.
 - [ ] Verify the registry metadata and install the published package in a clean consumer.
 - [ ] Configure npm trusted publishing for `.github/workflows/publish.yml` after the first package version exists.
 - [ ] Create and push the signed or annotated `v1.0.0` Git tag and GitHub release.
 
 ## First publication
 
-The initial package creation must be performed by an authenticated npm owner. Provenance is intentionally not requested for the first local publication because npm provenance is generated only by supported hosted CI. Future versions should use the trusted-publishing workflow.
+The initial package creation was performed by the authenticated npm owner with browser-based 2FA. Provenance was intentionally not requested for the first local publication because npm provenance is generated only by supported hosted CI. Future versions should use the trusted-publishing workflow.
 
 ## Release identity
 
