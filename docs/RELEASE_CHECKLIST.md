@@ -23,9 +23,9 @@
 - [ ] Enable GitHub private vulnerability reporting.
 - [x] Logged this machine into npm as `madhavmahajan132` with publishing 2FA enabled.
 - [x] Published `@madhavmahajan132/nodepulse@1.0.0` publicly with the `latest` dist-tag.
-- [ ] Verify the registry metadata and install the published package in a clean consumer.
+- [x] Verified public registry metadata and clean CommonJS/ESM installation from npm.
 - [ ] Configure npm trusted publishing for `.github/workflows/publish.yml` after the first package version exists.
-- [ ] Create and push the signed or annotated `v1.0.0` Git tag and GitHub release.
+- [ ] Create and push the annotated `v1.0.0` Git tag and GitHub release.
 
 ## First publication
 

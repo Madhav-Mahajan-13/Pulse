@@ -231,4 +231,5 @@ npm rejected the unscoped `nodepulse` name because it was too similar to the exi
 
 - Published `@madhavmahajan132/nodepulse@1.0.0` through npm's browser-based 2FA flow.
 - Confirmed through authenticated npm access controls that the package is public, owned with read-write access by `madhavmahajan132`, and assigned the `latest` dist-tag.
-- Public anonymous metadata and clean-install verification remain pending while npm propagates the first scoped release.
+- Confirmed public anonymous registry metadata after first-release propagation.
+- Installed the published package in a clean temporary consumer and verified both direct CommonJS `require()` and ESM `import` exports.
