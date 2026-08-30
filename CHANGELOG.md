@@ -2,7 +2,7 @@
 
 All notable changes will be documented here. This project follows Semantic Versioning and uses prerelease identifiers while the public contract is being validated.
 
-## [0.1.0-alpha.1] - 2026-08-30
+## [1.0.0] - 2026-08-30
 
 ### Added
 

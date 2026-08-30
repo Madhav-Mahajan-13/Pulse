@@ -1,9 +1,16 @@
 {
   "name": "nodepulse",
-  "version": "0.1.0-alpha.1",
+  "version": "1.0.0",
   "description": "Zero-configuration application performance monitoring for Node.js and Express.",
-  "private": true,
   "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/Madhav-Mahajan-13/Pulse.git"
+  },
+  "homepage": "https://github.com/Madhav-Mahajan-13/Pulse#readme",
+  "bugs": {
+    "url": "https://github.com/Madhav-Mahajan-13/Pulse/issues"
+  },
   "keywords": [
     "apm",
     "express",
@@ -14,8 +21,7 @@
   ],
   "sideEffects": false,
   "publishConfig": {
-    "access": "public",
-    "provenance": true
+    "access": "public"
   },
   "type": "module",
   "main": "./compat/index.cjs",

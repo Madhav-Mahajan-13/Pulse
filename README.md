@@ -2,7 +2,11 @@
 
 Zero-configuration, self-hosted application performance monitoring for Node.js and Express.
 
-NodePulse is in active pre-release development and is not published yet. The public middleware, rolling metrics engine, JSON endpoint, and first dashboard are implemented. The package remains `private` to prevent accidental publication before release checks are complete.
+NodePulse v1 provides a public Express middleware, bounded rolling metrics engine, schema-v2 JSON endpoint, and self-contained dashboard. It supports Node.js 22+ and Express 4/5.
+
+```powershell
+npm.cmd install nodepulse
+```
 
 > **Security:** The dashboard and JSON endpoint have no built-in authentication. Never expose them publicly without placing your own authentication middleware before NodePulse.
 

@@ -38,7 +38,7 @@ npm.cmd pack --pack-destination artifacts
 Install the resulting package inside another Express project:
 
 ```powershell
-npm.cmd install --force "..\Pulse\artifacts\nodepulse-0.1.0-alpha.1.tgz"
+npm.cmd install --force "..\Pulse\artifacts\nodepulse-1.0.0.tgz"
 ```
 
 ### Add it to an Express application

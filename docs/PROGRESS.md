@@ -201,3 +201,24 @@ Every number shown for a route now comes from the same set of fully finished tim
 ### Plain-language status
 
 A new developer can now understand how NodePulse works, find the correct source file, run the project, and reason about each dashboard number without first reading the entire codebase.
+
+## 2026-08-30 — Version 1 npm release preparation
+
+### Completed
+
+- Connected the canonical GitHub repository metadata to `Madhav-Mahajan-13/Pulse`.
+- Promoted the package identity from the alpha candidate to `nodepulse@1.0.0`.
+- Removed the private publication guard and added npm-facing repository, homepage, and issue links.
+- Added a GitHub trusted-publishing workflow for releases after the initial npm package creation.
+- Reconfirmed immediately before preparation that the unscoped `nodepulse` registry name was unclaimed.
+- Built and isolated-consumer verified the 70,706-byte `nodepulse-1.0.0.tgz` release artifact with SHA-256 `5D415D42F0708911C0CD2CABEF1FCED443982055C339E53D35296FC306C6879B`.
+
+### Remaining external actions
+
+- Make the GitHub repository publicly readable and push the two local v1 commits plus these release changes.
+- Log into npm with 2FA, perform the first publication, and verify the public installation.
+- Configure the npm trusted publisher and create the `v1.0.0` GitHub release.
+
+### Plain-language status
+
+The code and package metadata are being finalized as version 1.0.0. Publication now depends on GitHub visibility and npm account authentication rather than product implementation work.
